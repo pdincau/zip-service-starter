@@ -11,7 +11,7 @@ public class ZipService {
     }
 
     public ZipInfo dataFor(String country, String zipCode) {
-        validateInput(country, zipCode);
+        //validateInput(country, zipCode);
         return locations.findBy(new Query(country, zipCode));
     }
 
