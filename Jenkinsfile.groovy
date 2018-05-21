@@ -1,6 +1,10 @@
 node {
-    stage("Checkout from GitHub") {
+    def mvnHome = tool "Maven"
+
+    stage("Checkout") {
         checkout scm
-        sh "ls -al"
+    }
+    stage("Unit tests") {
+        sh "${mvnHome}/bin/mvn clean test"
     }
 }
