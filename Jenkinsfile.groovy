@@ -1,4 +1,6 @@
 node {
-    checkout scm
-    sh "ls -al"
+    stage("Checkout from GitHub") {
+        checkout scm
+        sh "ls -al"
+    }
 }
