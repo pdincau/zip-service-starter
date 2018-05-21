@@ -7,4 +7,7 @@ node {
     stage("Unit tests") {
         sh "${mvnHome}/bin/mvn clean test"
     }
+    stage("Integration tests") {
+        sh "{mvnHome}/bin/mvn clean test-compile failsafe:integration-test"
+    }
 }
