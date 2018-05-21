@@ -14,4 +14,9 @@ node {
         sh "${mvnHome}/bin/mvn clean package"
         sh "ls -al"
     }
+    stage("UAT") {
+        sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
+        sh "sleep 5"
+        sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
+    }
 }
