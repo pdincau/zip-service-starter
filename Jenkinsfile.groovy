@@ -23,7 +23,7 @@ node {
         sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
         sh "sleep 5"
         try {
-            sh "docker run -v \$(pwd)/m2:/root/.m2 -v \$(pwd):/app -w /app maven:3.5.3-jdk-8-alpine mvn -Dtest=\"UAT\" -Dhost=localhost -Dport=8082 test"
+            sh "docker run -v \$(pwd)/m2:/root/.m2 -v \$(pwd):/app -w /app maven:3.5.3-jdk-8-alpine mvn -Dtest=\"UAT\" -Dhost=localhost -Dport=8082 clean test"
         } finally {
             junit 'target/surefire-reports/**/*acceptance*.xml'
         }
