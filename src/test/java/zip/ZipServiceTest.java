@@ -38,6 +38,6 @@ public class ZipServiceTest {
 
         ZipInfo zipInfo = service.dataFor("it", "40100");
 
-        assertThat(zipInfo.country, is("Italia"));
+        assertThat(zipInfo.country, is("Italia1"));
     }
 }
