@@ -20,5 +20,6 @@ node {
         sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
         sh "sleep 5"
         sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
+        junit 'target/surefire-reports/**/*acceptance*.xml'
     }
 }
