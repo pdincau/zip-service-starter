@@ -29,5 +29,7 @@ node {
         } finally {
             junit 'target/surefire-reports/**/*acceptance*.xml'
         }
+    stage("Store Artifact") {
+        archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
     }
 }
