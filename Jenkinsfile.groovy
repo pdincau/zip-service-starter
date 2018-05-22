@@ -6,9 +6,11 @@ node {
     }
     stage("Unit tests") {
         sh "${mvnHome}/bin/mvn clean test"
+        junit 'target/surefire-reports/**/*.xml'
     }
     stage("Integration tests") {
         sh "${mvnHome}/bin/mvn clean test-compile failsafe:integration-test"
+        junit 'target/failsafe-reports/**/*.xml'
     }
     stage("Build artifact") {
         sh "${mvnHome}/bin/mvn clean package"

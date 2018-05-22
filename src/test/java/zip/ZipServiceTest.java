@@ -28,7 +28,7 @@ public class ZipServiceTest {
                 .isThrownBy(() -> service.dataFor("", ""))
                 .withMessage("One of the parameters is not set");
     }
-    
+
     @Test
     public void returns_zip_info_for_given_country_and_zip_code() {
         ZipInfo aZipInfo = new ZipInfo("40100", "Italia", "it", Collections.EMPTY_LIST);
