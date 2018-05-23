@@ -10,7 +10,7 @@ node {
             sh "docker run -v /tmp/m2:/root/.m2 -v \$(pwd):/app -w /app maven:3.5.3-jdk-8-alpine mvn clean test-compile failsafe:integration-test"
         }
         stage("Build artifact") {
-            sh "docker run -v /tmp/m2:/root/.m2 -v \$(pwd):/app -w /app maven:3.5.3-jdk-8-alpine mvn clean package"
+            sh "docker run -v /tmp/m2:/root/.m2 -v \$(pwd):/app -w /app maven:3.5.3-jdk-8-alpine mvn package"
         }
         stage("UAT") {
             sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
