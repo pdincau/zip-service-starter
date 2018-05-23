@@ -20,7 +20,7 @@ node {
     }
     stage("Build artifact") {
         sh "${mvnHome}/bin/mvn clean package"
-        sh "docker build -t pdincau/zip-service"
+        sh "docker build -t pdincau/zip-service ."
     }
     stage("UAT") {
         sh "docker run -d -p 8082:8080 pdincau/zip-service"
