@@ -1,5 +1,5 @@
-try {
-    node {
+node {
+    try {
         stage("Checkout") {
             checkout scm
         }
@@ -20,9 +20,9 @@ try {
         stage("Store Artifact") {
             archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
         }
+    } finally {
+        junit 'target/surefire-reports/**/*.xml'
+        junit 'target/failsafe-reports/**/*.xml'
+        step([$class: 'JacocoPublisher'])
     }
-} finally {
-    junit 'target/surefire-reports/**/*.xml'
-    junit 'target/failsafe-reports/**/*.xml'
-    step( [ $class: 'JacocoPublisher' ] )
 }
