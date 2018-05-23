@@ -20,9 +20,10 @@ node {
     }
     stage("Build artifact") {
         sh "${mvnHome}/bin/mvn clean package"
+        sh "docker build -t pdincau/zip-service"
     }
     stage("UAT") {
-        sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
+        sh "docker run -d -p 8082:8080 pdincau/zip-service"
         sh "sleep 5"
         try {
             sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
@@ -32,5 +33,6 @@ node {
     }
     stage("Store Artifact") {
         archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
+        sh "docker push pdincau/zip-service"
     }
 }
