@@ -23,15 +23,7 @@ node {
         stage("Store artifact") {
             archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
         }
-    } catch (err) {
-        def applicationName = 'zip-service'
-        def recipients = 'paolo.dincau@gmail.com'
-        mail subject: "Errore durante la build di $applicationName",
-                to: recipients,
-                body: "${env.BUILD_URL}consoleFull"
-        throw err
-    }
-    finally {
+    } finally {
             junit 'target/surefire-reports/**/*.xml'
             junit 'target/failsafe-reports/**/*.xml'
     }
