@@ -20,6 +20,9 @@ node {
             sh "sleep 5"
             sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
         }
+        stage("Store artifact") {
+            archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
+        }
     } finally {
             junit 'target/surefire-reports/**/*.xml'
             junit 'target/failsafe-reports/**/*.xml'
