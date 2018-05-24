@@ -14,6 +14,7 @@ node {
         }
         stage("Build artifact") {
             sh "${mvnHome}/bin/mvn package"
+            sh "docker build -t pdincau/zip-service:${env.BUILD_NUMBER} ."
         }
         stage("UAT") {
             sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
