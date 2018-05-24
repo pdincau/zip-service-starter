@@ -23,6 +23,7 @@ node {
         }
         stage("Store artifact") {
             archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
+            sh "docker push pdincau/zip-service:${env.BUILD_NUMBER}"
         }
     } finally {
             junit 'target/surefire-reports/**/*.xml'
