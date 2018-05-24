@@ -1,5 +1,6 @@
 node {
     def mvnHome = tool "Maven"
+    def app
 
     stage("Checkout") {
         checkout scm
@@ -14,16 +15,17 @@ node {
         }
         stage("Build artifact") {
             sh "${mvnHome}/bin/mvn package"
-            sh "docker build -t pdincau/zip-service:${env.BUILD_NUMBER} ."
+            app = docker.build("pdincau/zip-service")
         }
         stage("UAT") {
-            sh "java -jar -Dhttp.server.port=8082 target/zip-service-jar-with-dependencies.jar &"
-            sh "sleep 5"
-            sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
+            docker.image('pdincau/zip-service').withRun('-p 8082:8080') { c ->
+                sh "sleep 5"
+                sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
+            }
         }
         stage("Store artifact") {
             archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
-            sh "docker push pdincau/zip-service:${env.BUILD_NUMBER}"
+            app.push("${env.BUILD_NUMBER}")
         }
     } finally {
             junit 'target/surefire-reports/**/*.xml'
