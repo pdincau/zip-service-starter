@@ -30,6 +30,15 @@ public class ZipServiceTest {
     }
 
     @Test
+    public void this_should_make_jacoco_happy() {
+        ZipService service = new ZipService(null);
+
+        assertThatExceptionOfType(ZipServiceException.class)
+                .isThrownBy(() -> service.dataFor("jacoco", ""))
+                .withMessage("One of the parameters is not set");
+    }
+
+    @Test
     public void returns_zip_info_for_given_country_and_zip_code() {
         ZipInfo aZipInfo = new ZipInfo("40100", "Italia", "it", Collections.EMPTY_LIST);
         when(locations.findBy(any(Query.class))).thenReturn(aZipInfo);
