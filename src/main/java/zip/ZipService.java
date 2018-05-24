@@ -16,7 +16,7 @@ public class ZipService {
     }
 
     private void validateInput(String country, String zipCode) {
-        if (StringUtils.isEmpty(country) && StringUtils.isEmpty(zipCode)) {
+        if (StringUtils.isEmpty(country) || StringUtils.isEmpty(zipCode)) {
             throw new ZipServiceException("One of the parameters is not set");
         }
     }
