@@ -32,6 +32,7 @@ node {
         }
         stage("Push Image") {
             image.push(version)
+            image.push("latest")
         }
     } finally {
         junit 'target/surefire-reports/**/*.xml'
