@@ -1,35 +1,41 @@
 node {
-    def mvnHome = tool "Maven"
-    def app
-
-    stage("Checkout") {
-        checkout scm
-    }
-
     try {
-        stage("Unit tests") {
-            sh "${mvnHome}/bin/mvn clean test"
+        def image
+        def workspace = sh(returnStdout: true, script: 'pwd').trim()
+        def m2 = "/tmp/m2"
+        def version = "${env.BUILD_NUMBER}"
+
+        stage("Checkout") {
+            checkout scm
         }
-        stage("Integration tests") {
-            sh "${mvnHome}/bin/mvn test-compile failsafe:integration-test"
-        }
-        stage("Build artifact") {
-            sh "${mvnHome}/bin/mvn package"
-            app = docker.build("pdincau/zip-service")
-        }
-        stage("UAT") {
-            docker.image('pdincau/zip-service').withRun('-p 8082:8080') { c ->
-                sh "sleep 5"
-                sh "${mvnHome}/bin/mvn -Dtest=\"*UAT\" -Dhost=localhost -Dport=8082 test"
+        docker.image('maven:3.5.3-jdk-8-alpine').inside("-v ${m2}:/root/.m2 -v ${workspace}:/app -w /app") {
+            stage("Unit Tests") {
+                sh 'mvn clean test'
+            }
+            stage("Integration Tests") {
+                sh "mvn test-compile failsafe:integration-test"
+            }
+            stage("Package to jar") {
+                sh "mvn package"
             }
         }
-        stage("Store artifact") {
-            archiveArtifacts artifacts: 'target/zip-service-jar-with-dependencies.jar', fingerprint: true
-            app.push("${env.BUILD_NUMBER}")
+        stage("Build Docker Image") {
+            image = docker.build("pdincau/zip-service:$version")
+        }
+        stage("Test vs Container") {
+            docker.image("pdincau/zip-service:$version").withRun() { c ->
+                sleep 5
+                docker.image('maven:3.5.3-jdk-8-alpine').inside("-v ${m2}:/root/.m2 -v ${workspace}:/app -w /app --link ${c.id}:app") {
+                    sh "mvn -Dhost=app -Dport=8080 -Dtest=\"*UAT\" test"
+                }
+            }
+        }
+        stage("Push Image") {
+            image.push(version)
         }
     } finally {
-            junit 'target/surefire-reports/**/*.xml'
-            junit 'target/failsafe-reports/**/*.xml'
-            step([$class: 'JacocoPublisher'])
+        junit 'target/surefire-reports/**/*.xml'
+        junit 'target/failsafe-reports/**/*.xml'
+        step([$class: 'JacocoPublisher'])
     }
 }
