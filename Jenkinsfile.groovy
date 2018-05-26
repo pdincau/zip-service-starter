@@ -22,14 +22,6 @@ node {
         stage("Build Docker Image") {
             image = docker.build("pdincau/zip-service:$version")
         }
-        stage("Test Migrations") {
-            docker.image("postgres:10.4-alpine").withRun() { c ->
-                sleep 3
-                docker.image("boxfuse/flyway").inside("-v ${workspace}/database/migrations:/flyway/sql -v ${workspace}/database/local:/flyway/conf --link ${c.id}:db") {
-                    sh "migrate"
-                }
-            }
-        }
         stage("Test vs Container") {
             docker.image("pdincau/zip-service:$version").withRun() { c ->
                 sleep 3
