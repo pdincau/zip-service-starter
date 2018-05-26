@@ -22,9 +22,17 @@ node {
         stage("Build Docker Image") {
             image = docker.build("pdincau/zip-service:$version")
         }
+        stage("Test Migrations") {
+            docker.image("postgres:10.4-alpine").withRun() { c ->
+                sleep 3
+                docker.image("boxfuse/flyway").inside("-v $(pwd)/database/migrations:/flyway/sql -v $(pwd)/database/local:/flyway/conf --link ${c.id}:db") {
+                    sh "migrate"
+                }
+            }
+        }
         stage("Test vs Container") {
             docker.image("pdincau/zip-service:$version").withRun() { c ->
-                sleep 5
+                sleep 3
                 docker.image('maven:3.5.3-jdk-8-alpine').inside("-v ${m2}:/root/.m2 -v ${workspace}:/app -w /app --link ${c.id}:app") {
                     sh "mvn -Dhost=app -Dport=8080 -Dtest=\"*UAT\" test"
                 }
