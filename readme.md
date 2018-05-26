@@ -64,4 +64,10 @@ You can generate reports for the code coverage as follows:
 mvn jacoco:report
 ```
 
+## Migrate Db
 
+Database can be migrated with:
+
+```sh
+docker run --rm -v $(pwd)/opt/migrations:/flyway/sql -v $(pwd)/opt:/flyway/conf boxfuse/flyway migrate
+```
