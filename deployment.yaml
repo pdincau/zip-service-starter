@@ -1,21 +1,21 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-    name: zip-k8s
+    name: zip-service
     labels:
-        app: zip-k8s
+        app: zip-service
 spec:
   selector:
     matchLabels:
-      app: zip-k8s
+      app: zip-service
   replicas: 2
   template:
     metadata:
       labels:
-        app: zip-k8s
+        app: zip-service
     spec:
       containers:
-      - name: zip-k8s
+      - name: zip-service
         image: pdincau/zip-service:46
         ports:
         - containerPort: 8080
