@@ -25,7 +25,7 @@ node {
         stage("Test Migrations") {
             docker.image("postgres:10.4-alpine").withRun() { c ->
                 sleep 3
-                docker.image("boxfuse/flyway").inside("-v $(pwd)/database/migrations:/flyway/sql -v $(pwd)/database/local:/flyway/conf --link ${c.id}:db") {
+                docker.image("boxfuse/flyway").inside("-v ${workspace}/database/migrations:/flyway/sql -v ${workspace}/database/local:/flyway/conf --link ${c.id}:db") {
                     sh "migrate"
                 }
             }
