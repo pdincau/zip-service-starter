@@ -69,5 +69,5 @@ mvn jacoco:report
 Database can be migrated with:
 
 ```sh
-docker run --rm -v $(pwd)/opt/migrations:/flyway/sql -v $(pwd)/opt:/flyway/conf boxfuse/flyway migrate
+docker run --rm -v $(pwd)/database/migrations:/flyway/sql -v $(pwd)/database/local:/flyway/conf boxfuse/flyway migrate
 ```
